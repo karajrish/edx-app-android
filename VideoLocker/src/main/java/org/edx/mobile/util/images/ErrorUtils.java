@@ -8,13 +8,15 @@ import org.edx.mobile.http.RetroHttpException;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.util.NetworkUtil;
 
+import java.net.HttpURLConnection;
+
 import retrofit.RetrofitError;
 
 public enum ErrorUtils {
     ;
 
     protected static final Logger logger = new Logger(ErrorUtils.class.getName());
-    
+
     @NonNull
     public static String getErrorMessage(@NonNull Throwable ex, @NonNull Context context) {
         String errorMessage = null;
@@ -32,8 +34,14 @@ public enum ErrorUtils {
                 case HTTP: {
                     if (cause.getResponse() != null) {
                         final int status = cause.getResponse().getStatus();
-                        if (status == 503) {
-                            errorMessage = context.getString(R.string.network_service_unavailable);
+                        switch (status) {
+                            case HttpURLConnection.HTTP_UNAVAILABLE:
+                                errorMessage = context.getString(R.string.network_service_unavailable);
+                                break;
+                            case HttpURLConnection.HTTP_NOT_FOUND:
+                            case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                                errorMessage = context.getString(R.string.action_not_completed);
+                                break;
                         }
                     }
                 }
