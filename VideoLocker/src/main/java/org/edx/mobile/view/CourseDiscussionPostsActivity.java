@@ -35,7 +35,7 @@ public class CourseDiscussionPostsActivity extends BaseSingleFragmentActivity  {
     @InjectExtra(value = Router.EXTRA_DISCUSSION_TOPIC, optional = true)
     private DiscussionTopic discussionTopic;
 
-    @InjectExtra(Router.EXTRA_COURSE_DATA)
+    @InjectExtra(Router.EXTRA_ENROLLMENT_COURSE_DATA)
     private EnrolledCoursesResponse courseData;
 
     @Override

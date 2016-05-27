@@ -51,7 +51,7 @@ public class DiscussionAddPostFragment extends BaseFragment {
 
     protected final Logger logger = new Logger(getClass().getName());
 
-    @InjectExtra(Router.EXTRA_COURSE_DATA)
+    @InjectExtra(Router.EXTRA_ENROLLMENT_COURSE_DATA)
     private EnrolledCoursesResponse courseData;
 
     @InjectExtra(Router.EXTRA_DISCUSSION_TOPIC)

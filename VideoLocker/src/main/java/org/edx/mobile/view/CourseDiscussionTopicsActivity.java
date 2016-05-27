@@ -17,7 +17,7 @@ public class CourseDiscussionTopicsActivity extends BaseSingleFragmentActivity {
     @Inject
     private CourseDiscussionTopicsFragment discussionFragment;
 
-    @InjectExtra(Router.EXTRA_COURSE_DATA)
+    @InjectExtra(Router.EXTRA_ENROLLMENT_COURSE_DATA)
     private EnrolledCoursesResponse courseData;
 
     @Override
@@ -32,7 +32,7 @@ public class CourseDiscussionTopicsActivity extends BaseSingleFragmentActivity {
     public Fragment getFirstFragment() {
         if (courseData != null) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(Router.EXTRA_COURSE_DATA, courseData);
+            bundle.putSerializable(Router.EXTRA_ENROLLMENT_COURSE_DATA, courseData);
             discussionFragment.setArguments(bundle);
         }
         discussionFragment.setRetainInstance(true);

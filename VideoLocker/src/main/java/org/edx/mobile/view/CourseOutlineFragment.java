@@ -95,7 +95,7 @@ public class CourseOutlineFragment extends MyVideosBaseFragment {
         restore(savedInstanceState);
         final Bundle bundle = getArguments();
         if( courseData == null ) {
-            courseData = (EnrolledCoursesResponse) bundle.getSerializable(Router.EXTRA_ENROLLMENT);
+            courseData = (EnrolledCoursesResponse) bundle.getSerializable(Router.EXTRA_ENROLLMENT_COURSE_DATA);
             courseComponentId = bundle.getString(Router.EXTRA_COURSE_COMPONENT_ID);
         }
         loadData(getView());

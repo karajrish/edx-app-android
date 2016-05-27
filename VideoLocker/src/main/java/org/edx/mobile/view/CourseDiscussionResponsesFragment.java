@@ -49,7 +49,7 @@ public class CourseDiscussionResponsesFragment extends BaseFragment implements C
     @InjectExtra(Router.EXTRA_DISCUSSION_THREAD)
     private DiscussionThread discussionThread;
 
-    @InjectExtra(value = Router.EXTRA_COURSE_DATA, optional = true)
+    @InjectExtra(value = Router.EXTRA_ENROLLMENT_COURSE_DATA, optional = true)
     private EnrolledCoursesResponse courseData;
 
     private CourseDiscussionResponsesAdapter courseDiscussionResponsesAdapter;

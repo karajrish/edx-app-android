@@ -42,7 +42,7 @@ public class CourseDiscussionTopicsFragment extends BaseFragment {
     @InjectView(R.id.discussion_topics_listview)
     private ListView discussionTopicsListView;
 
-    @InjectExtra(Router.EXTRA_COURSE_DATA)
+    @InjectExtra(Router.EXTRA_ENROLLMENT_COURSE_DATA)
     private EnrolledCoursesResponse courseData;
 
     @Inject

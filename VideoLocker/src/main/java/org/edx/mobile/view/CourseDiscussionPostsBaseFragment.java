@@ -25,7 +25,7 @@ public abstract class CourseDiscussionPostsBaseFragment extends BaseFragment imp
     @InjectView(R.id.discussion_posts_listview)
     ListView discussionPostsListView;
 
-    @InjectExtra(Router.EXTRA_COURSE_DATA)
+    @InjectExtra(Router.EXTRA_ENROLLMENT_COURSE_DATA)
     EnrolledCoursesResponse courseData;
 
     @Inject

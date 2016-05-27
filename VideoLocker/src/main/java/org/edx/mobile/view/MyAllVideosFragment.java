@@ -46,7 +46,7 @@ public class MyAllVideosFragment extends MyVideosBaseFragment {
                 AppConstants.myVideosDeleteMode = false;
                 
                 Intent videoIntent = new Intent(getActivity(), VideoListActivity.class);
-                videoIntent.putExtra(Router.EXTRA_ENROLLMENT, model);
+                videoIntent.putExtra(Router.EXTRA_ENROLLMENT_COURSE_DATA, model);
                 videoIntent.putExtra("FromMyVideos", true);
                 //videoIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(videoIntent);

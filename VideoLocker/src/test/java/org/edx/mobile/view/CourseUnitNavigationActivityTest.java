@@ -74,7 +74,7 @@ public class CourseUnitNavigationActivityTest extends CourseBaseActivityTest {
         CourseComponent courseUnit = leafComponents.get(0);
         Intent intent = super.getIntent();
         Bundle extras = new Bundle();
-        extras.putSerializable(Router.EXTRA_ENROLLMENT, courseData);
+        extras.putSerializable(Router.EXTRA_ENROLLMENT_COURSE_DATA, courseData);
         extras.putString(Router.EXTRA_COURSE_COMPONENT_ID, courseUnit.getId());
         intent.putExtra(Router.EXTRA_BUNDLE, extras);
 
@@ -134,7 +134,7 @@ public class CourseUnitNavigationActivityTest extends CourseBaseActivityTest {
         // Text navigation through units
         Bundle extras = intent.getBundleExtra(Router.EXTRA_BUNDLE);
         EnrolledCoursesResponse courseData = (EnrolledCoursesResponse)
-                extras.getSerializable(Router.EXTRA_ENROLLMENT);
+                extras.getSerializable(Router.EXTRA_ENROLLMENT_COURSE_DATA);
         assertNotNull(courseData);
         CourseComponent courseComponent;
         try {
