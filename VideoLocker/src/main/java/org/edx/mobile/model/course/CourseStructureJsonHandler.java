@@ -45,15 +45,16 @@ public class CourseStructureJsonHandler {
     class BlockDataDeserializer implements JsonDeserializer<BlockData>
     {
         @Override
-        public BlockData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
+        public BlockData deserialize(JsonElement json, Type typeOfT,
+                                     JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
             //TODO - can not figure out a way to pass parent properties, for example, "type" field
             //so have to check the existence of certain fields
-            if ( jsonObject.has("encoded_videos") || jsonObject.has("transcripts") ) {
-                 return context.deserialize(jsonObject, VideoData.class);
+            if (jsonObject.has("encoded_videos") || jsonObject.has("transcripts")) {
+                return context.deserialize(jsonObject, VideoData.class);
+            } else if (jsonObject.has("topic_id")) {
+                return context.deserialize(jsonObject, DiscussionData.class);
             }
-            //
             return new BlockData();
         }
     }

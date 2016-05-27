@@ -42,7 +42,7 @@ public class Router {
     public static final String EXTRA_DISCUSSION_TOPIC = "discussion_topic";
     public static final String EXTRA_DISCUSSION_THREAD = "discussion_thread";
     public static final String EXTRA_DISCUSSION_COMMENT = "discussion_comment";
-    public static final String EXTRA_DISCUSSION_TOPIC_OBJ = "discussion_topic_obj";
+    public static final String EXTRA_DISCUSSION_TOPIC_ID = "discussion_topic_id";
 
     @Inject
     Config config;
@@ -240,9 +240,9 @@ public class Router {
         context.startActivity(discussionResponsesIntent);
     }
 
-    public void showCourseDiscussionAddResponse(Context context, DiscussionThread discussionTopic) {
+    public void showCourseDiscussionAddResponse(Context context, DiscussionThread discussionThread) {
         Intent addResponseIntent = new Intent(context, DiscussionAddResponseActivity.class);
-        addResponseIntent.putExtra(EXTRA_DISCUSSION_TOPIC_OBJ, discussionTopic);
+        addResponseIntent.putExtra(EXTRA_DISCUSSION_THREAD, discussionThread);
         addResponseIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         context.startActivity(addResponseIntent);
     }

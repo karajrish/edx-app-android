@@ -73,11 +73,13 @@ public class ServiceManager {
                     String username = URLEncoder.encode(pref.getCurrentUserProfile().username, "UTF-8");
                     String block_counts = URLEncoder.encode("video", "UTF-8");
                     String requested_fields = URLEncoder.encode("graded,format,student_view_multi_device", "UTF-8");
-                    String student_view_data = URLEncoder.encode("video", "UTF-8");
+                    String student_view_data = URLEncoder.encode("discussion,video", "UTF-8");
                     String cId = URLEncoder.encode(courseId, "UTF-8");
 
-                    String url = config.getApiHostURL() + "/api/courses/v1/blocks/?course_id=" + cId + "&username="
-                            + username + "&depth=all&requested_fields=" + requested_fields + "&student_view_data=" + student_view_data + "&block_counts=" + block_counts + "&nav_depth=3";
+                    String url = config.getApiHostURL() + "/api/courses/v1/blocks/?course_id="
+                            + cId + "&username=" + username + "&depth=all&requested_fields="
+                            + requested_fields + "&student_view_data=" + student_view_data
+                            + "&block_counts=" + block_counts + "&nav_depth=3";
 
                     logger.debug("GET url for enrolling in a Course: " + url);
                     return url;

@@ -72,6 +72,12 @@ public class CourseDiscussionPostsThreadFragment extends CourseDiscussionPostsBa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+
+        if (discussionTopic == null) {
+            // Either we are coming from a deep link or courseware inline discussion
+            discussionTopic = new DiscussionTopic();
+            discussionTopic.setIdentifier(getArguments().getString(Router.EXTRA_DISCUSSION_TOPIC_ID));
+        }
     }
 
     @Nullable

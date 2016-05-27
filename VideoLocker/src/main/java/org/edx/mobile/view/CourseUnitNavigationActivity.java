@@ -291,16 +291,17 @@ public class CourseUnitNavigationActivity extends CourseBaseActivity implements 
             //FIXME - for the video, let's ignore studentViewMultiDevice for now
             if (unit instanceof VideoBlockModel &&
                     ((VideoBlockModel) unit).getData().encodedVideos.getPreferredVideoInfo() != null) {
-                    unitFragment = CourseUnitVideoFragment.newInstance((VideoBlockModel) unit);
+                unitFragment = CourseUnitVideoFragment.newInstance((VideoBlockModel) unit);
             } else if (unit instanceof VideoBlockModel &&
                     ((VideoBlockModel) unit).getData().encodedVideos.getYoutubeVideoInfo() != null) {
-                    unitFragment = CourseUnitOnlyOnYoutubeFragment.newInstance(unit);
+                unitFragment = CourseUnitOnlyOnYoutubeFragment.newInstance(unit);
+            } else if (unit.getType() == BlockType.DISCUSSION) {
+                unitFragment = CourseUnitDiscussionFragment.newInstance(unit, courseData);
             } else if (!unit.isMultiDevice()) {
                 unitFragment = CourseUnitMobileNotSupportedFragment.newInstance(unit);
             } else if (unit.getType() != BlockType.VIDEO &&
                     unit.getType() != BlockType.HTML &&
                     unit.getType() != BlockType.OTHERS &&
-                    unit.getType() != BlockType.DISCUSSION &&
                     unit.getType() != BlockType.PROBLEM) {
                 unitFragment = CourseUnitEmptyFragment.newInstance(unit);
             } else if (unit instanceof HtmlBlockModel) {
