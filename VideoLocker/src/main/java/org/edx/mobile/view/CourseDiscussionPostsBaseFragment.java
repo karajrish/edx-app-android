@@ -47,9 +47,14 @@ public abstract class CourseDiscussionPostsBaseFragment extends BaseFragment imp
                                      View view, int position, long id);
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        courseData = (EnrolledCoursesResponse) getArguments().getSerializable(Router.EXTRA_ENROLLMENT_COURSE_DATA);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        courseData = (EnrolledCoursesResponse) getArguments().getSerializable(Router.EXTRA_ENROLLMENT_COURSE_DATA);
         controller = InfiniteScrollUtils.configureListViewWithInfiniteList(discussionPostsListView, discussionPostsAdapter, this);
         discussionPostsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
