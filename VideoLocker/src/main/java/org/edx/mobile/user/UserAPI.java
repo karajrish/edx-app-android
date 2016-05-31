@@ -90,8 +90,7 @@ public class UserAPI {
         return config.getApiHostURL() + "/api/mobile/v0.5/users/" + username + "/course_enrollments";
     }
 
-    public List<EnrolledCoursesResponse> getUserEnrolledCourses(@NonNull String username, boolean tryCache) throws RetroHttpException {
-        List<EnrolledCoursesResponse> ret = null;
+    public @NonNull List<EnrolledCoursesResponse> getUserEnrolledCourses(@NonNull String username, boolean tryCache) throws RetroHttpException {
         String json = null;
 
         final String cacheKey = getUserEnrolledCoursesURL(username);
@@ -136,12 +135,15 @@ public class UserAPI {
 
             // NOTE: trying to pass in List<EnrolledCourseResponse> (with the help of token type) yields NoClassDefFoundError
             JsonArray ary = gson.fromJson(json, JsonArray.class);
-            ret = new ArrayList<>(ary.size());
+            List<EnrolledCoursesResponse>  ret = new ArrayList<>(ary.size());
             for (int cnt=0; cnt<ary.size(); ++cnt) {
                 ret.add(gson.fromJson(ary.get(cnt), EnrolledCoursesResponse.class));
             }
-        }
 
-        return ret;
+            return ret;
+        }
+        else {
+            return new ArrayList<>();
+        }
     }
 }
