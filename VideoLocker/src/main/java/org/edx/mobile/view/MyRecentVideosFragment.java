@@ -20,6 +20,8 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.google.inject.Inject;
+
 import org.edx.mobile.R;
 import org.edx.mobile.base.MyVideosBaseFragment;
 import org.edx.mobile.interfaces.NetworkSubject;
@@ -31,6 +33,7 @@ import org.edx.mobile.model.api.VideoResponseModel;
 import org.edx.mobile.model.db.DownloadEntry;
 import org.edx.mobile.module.analytics.ISegment;
 import org.edx.mobile.module.db.DataCallback;
+import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.module.prefs.PrefManager;
 import org.edx.mobile.player.IPlayerEventCallback;
 import org.edx.mobile.player.PlayerFragment;
@@ -62,6 +65,9 @@ public class MyRecentVideosFragment extends MyVideosBaseFragment implements IPla
     private CompoundButton.OnCheckedChangeListener deleteCheckBoxChangeListener;
     private final Logger logger = new Logger(getClass().getName());
     private GetRecentDownloadedVideosTask getRecentDownloadedVideosTask;
+
+    @Inject
+    LoginPrefs loginPrefs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -270,7 +276,7 @@ public class MyRecentVideosFragment extends MyVideosBaseFragment implements IPla
 
         Context context = getContext();
         String prefName = PrefManager.getPrefNameForLastAccessedBy(
-                getProfile().username, videoModel.eid);
+                loginPrefs.getUsername(), videoModel.eid);
         PrefManager prefManager = new PrefManager(context, prefName);
         VideoResponseModel vrm;
         try {
@@ -684,13 +690,4 @@ public class MyRecentVideosFragment extends MyVideosBaseFragment implements IPla
             logger.error(ex);
         }
     };
-
-    /**
-     * @return User's profile.
-     */
-    protected ProfileModel getProfile() {
-        PrefManager prefManager = new PrefManager(getActivity(), PrefManager.Pref.LOGIN);
-        return prefManager.getCurrentUserProfile();
-    }
-
 }

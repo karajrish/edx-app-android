@@ -17,12 +17,12 @@ import org.edx.mobile.util.Sha1Util;
 
 /**
  * This is a Utility for reading and writing to shared preferences.
- * This class also contains the constants for the preference names and the keys. 
- * These constants are defined in inner classes <code>Pref</code> and <code>Key</code>. 
+ * This class also contains the constants for the preference names and the keys.
+ * These constants are defined in inner classes <code>Pref</code> and <code>Key</code>.
  *
  */
 public class PrefManager {
-    
+
     private Context context;
     private String prefName;
     private static final Logger logger = new Logger(PrefManager.class.getName());
@@ -36,7 +36,7 @@ public class PrefManager {
             this.context = context;
         this.prefName = prefName;
     }
-    
+
     /**
      * Puts given key-value pair to the Shared Preferences.
      * @param key
@@ -46,7 +46,7 @@ public class PrefManager {
         Editor edit = context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit();
         edit.putString(key, value).commit();
     }
-    
+
     /**
      * Puts given key-value pair to the Shared Preferences.
      * @param key
@@ -56,7 +56,7 @@ public class PrefManager {
         Editor edit = context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit();
         edit.putBoolean(key, value).commit();
     }
-    
+
     /**
      * Puts given key-value pair to the Shared Preferences.
      * @param key
@@ -66,7 +66,7 @@ public class PrefManager {
         Editor edit = context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit();
         edit.putLong(key, value).commit();
     }
-    
+
     /**
      * Puts given key-value pair to the Shared Preferences.
      * @param key
@@ -76,11 +76,11 @@ public class PrefManager {
         Editor edit = context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit();
         edit.putFloat(key, value).commit();
     }
-    
+
     /**
      * Returns String value for the given key, null if no value is found.
      * @param key
-     * @return String 
+     * @return String
      */
     public String getString(String key) {
         if(context!=null){
@@ -89,7 +89,7 @@ public class PrefManager {
         }
         return null;
     }
-    
+
 
     /**
      * Returns boolean value for the given key, can set default value as well.
@@ -103,7 +103,7 @@ public class PrefManager {
         }
         return defaultValue;
     }
-    
+
     /**
      * Returns long value for the given key, -1 if no value is found.
      * @param key
@@ -116,7 +116,7 @@ public class PrefManager {
         }
         return -1;
     }
-    
+
     /**
      * Returns float value for the given key, -1 if no value is found.
      * @param key
@@ -142,59 +142,13 @@ public class PrefManager {
     }
 
     /**
-     * Returns current user's profile from the preferences.
-     * @return
-     */
-    @Nullable
-    public ProfileModel getCurrentUserProfile() {
-        String json = getString(PrefManager.Key.PROFILE_JSON);
-        if (json == null) {
-            return null;
-        }
-        
-        Gson gson = new GsonBuilder().create();
-        ProfileModel res = gson.fromJson(json, ProfileModel.class);
-        res.json = json;
-        
-        return res;
-    }
-    
-    /**
-     * Returns current user's profile from the preferences.
-     * @return
-     */
-    public AuthResponse getCurrentAuth() {
-        String json = getString(PrefManager.Key.AUTH_JSON);
-        if (json == null) {
-            return null;
-        }
-
-        Gson gson = new GsonBuilder().create();
-        AuthResponse res = gson.fromJson(json, AuthResponse.class);
-        
-        return res;
-    }
-
-    /**
-     * Clears auth token info and current profile information from preferences.
-     */
-    public void clearAuth() {
-        put(PrefManager.Key.PROFILE_JSON, null);
-        put(PrefManager.Key.AUTH_JSON, null);
-        put(PrefManager.Key.AUTH_TOKEN_SOCIAL, null);
-        put(PrefManager.Key.AUTH_TOKEN_BACKEND, null);
-        put(PrefManager.Key.AUTH_TOKEN_SOCIAL_COOKIE, null);
-        //assessment webview related session_id
-        EdxCookieManager.getSharedInstance().clearWebWiewCookie(MainApplication.instance());
-    }
-
-    /**
      *  check if app is currently logged in through Google/Facebook
      */
     public boolean hasAuthTokenSocialCookie(){
+        // FIXME: This will always be false; The preference referenced here is never set
         return  null !=  getString(Key.AUTH_TOKEN_SOCIAL_COOKIE);
     }
-    
+
     /**
      * Stores information of last accesses subsection for given id.
      * Modification date is also stored for current time.
@@ -209,7 +163,7 @@ public class PrefManager {
         edit.putBoolean(PrefManager.Key.LASTACCESSED_SYNCED_FLAG, lastAccessedFlag);
         edit.commit();
     }
-    
+
     /**
      * Returns true if given courseId's last access is synced with server, false otherwise.
      * @return
@@ -221,18 +175,18 @@ public class PrefManager {
 
 
     /**
-     * Returns last accessed subsection id for the given course. 
+     * Returns last accessed subsection id for the given course.
      * @return
      */
     public String getLastAccessedSubsectionId() {
         return context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
                 .getString(PrefManager.Key.LASTACCESSED_MODULE_ID, null);
     }
-    
+
     /**
      * Returns preference file name that can be used to store information about last accessed subsection.
      * This preference file name is SHA1 hash of a combination of username, courseId and a constant suffix.
-     * 
+     *
      * @param username
      * @param courseId
      * @return
@@ -324,7 +278,7 @@ public class PrefManager {
         public static final String USER_PREF = "pref_user";
 
     }
-    
+
     /**
      * Contains preference key constants.
      *
@@ -332,6 +286,7 @@ public class PrefManager {
     public static final class Key {
         public static final String PROFILE_JSON = "profile_json";
         public static final String AUTH_JSON = "auth_json";
+        public static final String AUTH_EMAIL = "email";
         //TODO- need to rename these constants. causing confusion
         public static final String AUTH_TOKEN_SOCIAL = "facebook_token";
         public static final String AUTH_TOKEN_BACKEND = "google_token";
@@ -356,7 +311,7 @@ public class PrefManager {
 
 
     }
-    
+
     public static final class Value {
         /*
          * These values are used in API endpoint

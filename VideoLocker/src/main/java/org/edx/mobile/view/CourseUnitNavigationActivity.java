@@ -23,6 +23,7 @@ import org.edx.mobile.model.course.CourseComponent;
 import org.edx.mobile.model.course.HtmlBlockModel;
 import org.edx.mobile.model.course.VideoBlockModel;
 import org.edx.mobile.module.analytics.ISegment;
+import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.module.prefs.PrefManager;
 import org.edx.mobile.services.ViewPagerDownloadManager;
 import org.edx.mobile.view.common.PageViewStateCallback;
@@ -31,6 +32,8 @@ import org.edx.mobile.view.custom.DisableableViewPager;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import roboguice.inject.InjectView;
 
@@ -56,6 +59,9 @@ public class CourseUnitNavigationActivity extends CourseBaseActivity implements 
     private TextView mNextUnitLbl;
     @InjectView(R.id.prev_unit_title)
     private TextView mPreviousUnitLbl;
+
+    @Inject
+    LoginPrefs loginPrefs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,8 +157,8 @@ public class CourseUnitNavigationActivity extends CourseBaseActivity implements 
         courseComponentId = selectedUnit.getId();
         environment.getDatabase().updateAccess(null, selectedUnit.getId(), true);
 
-        String prefName = PrefManager.getPrefNameForLastAccessedBy(getProfile()
-            .username, selectedUnit.getCourseId());
+        String prefName = PrefManager.getPrefNameForLastAccessedBy(
+                loginPrefs.getUsername(), selectedUnit.getCourseId());
         final PrefManager prefManager = new PrefManager(MainApplication.instance(), prefName);
         prefManager.putLastAccessedSubsection(this.selectedUnit.getId(), false);
         Intent resultData = new Intent();

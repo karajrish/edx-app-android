@@ -10,13 +10,19 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.google.inject.Inject;
+
 import org.edx.mobile.R;
 import org.edx.mobile.base.BaseFragmentActivity;
 import org.edx.mobile.module.analytics.ISegment;
+import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.module.prefs.PrefManager;
 import org.edx.mobile.util.AppConstants;
 
 public class LaunchActivity extends BaseFragmentActivity {
+
+    @Inject
+    LoginPrefs loginPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +32,7 @@ public class LaunchActivity extends BaseFragmentActivity {
         enableLoginCallback();
 
         //We need to stop the Launch Activity from launching if the user has logged in
-        PrefManager pm =new PrefManager(LaunchActivity.this, PrefManager.Pref.LOGIN);
-        if (pm.getCurrentUserProfile() != null) {
+        if (loginPrefs.getCurrentUserProfile() != null) {
             finish();
             return;
         }

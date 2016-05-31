@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
@@ -19,6 +20,8 @@ import com.parse.ParseInstallation;
 import org.edx.mobile.BuildConfig;
 import org.edx.mobile.R;
 import org.edx.mobile.core.EdxDefaultModule;
+import org.edx.mobile.core.EdxEnvironment;
+import org.edx.mobile.core.IEdxEnvironment;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.module.analytics.ISegment;
 import org.edx.mobile.module.notification.NotificationDelegate;
@@ -135,6 +138,7 @@ public abstract class MainApplication extends MultiDexApplication {
         logger.debug("onApplicationLaunchedFromBackground");
         PrefManager pref = new PrefManager(this, PrefManager.Pref.LOGIN);
         if (pref.hasAuthTokenSocialCookie()) {
+            // TODO: This never runs. Figure out how to test and if we still need this code.
             injector.getInstance(Router.class).forceLogout(this, injector.getInstance(ISegment.class), injector.getInstance(NotificationDelegate.class));
         }
     }
@@ -201,6 +205,11 @@ public abstract class MainApplication extends MultiDexApplication {
 
     public Injector getInjector() {
         return injector;
+    }
+
+    @NonNull
+    public static IEdxEnvironment getEnvironment(@NonNull Context context) {
+        return RoboGuice.getInjector(context).getInstance(IEdxEnvironment.class);
     }
 
     private final class MyActivityLifecycleCallbacks

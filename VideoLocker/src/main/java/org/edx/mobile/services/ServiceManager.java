@@ -29,6 +29,7 @@ import org.edx.mobile.model.api.VideoResponseModel;
 import org.edx.mobile.model.course.CourseComponent;
 import org.edx.mobile.model.course.CourseStructureJsonHandler;
 import org.edx.mobile.model.course.CourseStructureV1Model;
+import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.module.prefs.PrefManager;
 import org.edx.mobile.module.registration.model.RegistrationDescription;
 import org.edx.mobile.util.Config;
@@ -61,6 +62,9 @@ public class ServiceManager {
     @Inject
     IApi api;
 
+    @Inject
+    LoginPrefs loginPrefs;
+
     public ServiceManager() {
         cacheManager = new CacheManager(MainApplication.instance());
     }
@@ -69,8 +73,7 @@ public class ServiceManager {
         return new HttpRequestEndPoint() {
             public String getUrl() {
                 try {
-                    PrefManager pref = new PrefManager(MainApplication.instance(), PrefManager.Pref.LOGIN);
-                    String username = URLEncoder.encode(pref.getCurrentUserProfile().username, "UTF-8");
+                    String username = URLEncoder.encode(loginPrefs.getUsername(), "UTF-8");
                     String block_counts = URLEncoder.encode("video", "UTF-8");
                     String requested_fields = URLEncoder.encode("graded,format,student_view_multi_device", "UTF-8");
                     String student_view_data = URLEncoder.encode("video", "UTF-8");

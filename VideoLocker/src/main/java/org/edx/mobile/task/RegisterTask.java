@@ -11,6 +11,7 @@ import org.edx.mobile.authentication.AuthResponse;
 import org.edx.mobile.authentication.LoginAPI;
 import org.edx.mobile.model.api.RegisterResponse;
 import org.edx.mobile.module.analytics.ISegment;
+import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.module.prefs.PrefManager;
 import org.edx.mobile.services.ServiceManager;
 import org.edx.mobile.social.SocialFactory;
@@ -32,6 +33,9 @@ public abstract class RegisterTask extends Task<RegisterResponse> {
 
     @Inject
     LoginAPI loginAPI;
+
+    @Inject
+    LoginPrefs loginPrefs;
 
     @Override
     public RegisterResponse call() throws Exception {
@@ -55,11 +59,7 @@ public abstract class RegisterTask extends Task<RegisterResponse> {
 
                 auth = loginAPI.getAccessToken(username, password);
 
-                // store auth token response
-                Gson gson = new GsonBuilder().create();
-                PrefManager pref = new PrefManager(context, PrefManager.Pref.LOGIN);
-                pref.put(PrefManager.Key.AUTH_JSON, gson.toJson(auth));
-                pref.put(PrefManager.Key.SEGMENT_KEY_BACKEND, ISegment.Values.PASSWORD);
+                loginPrefs.storeAuthTokenResponse(auth, LoginPrefs.AuthBackend.PASSWORD);
 
                 if (auth.isSuccess()) {
                     logger.debug("login succeeded after email registration");

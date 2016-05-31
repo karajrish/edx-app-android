@@ -12,6 +12,7 @@ import org.edx.mobile.exception.LoginException;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.authentication.AuthResponse;
 import org.edx.mobile.model.api.ProfileModel;
+import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.module.prefs.PrefManager;
 import org.edx.mobile.services.ServiceManager;
 import org.edx.mobile.social.facebook.FacebookProvider;
@@ -40,6 +41,7 @@ public class SocialLoginDelegate {
     private MobileLoginCallback callback;
     private SocialUserInfoCallback userInfoCallback;
     private ISocial google, facebook;
+    private final LoginPrefs loginPrefs;
 
     private String userEmail;
 
@@ -64,10 +66,11 @@ public class SocialLoginDelegate {
 
 
 
-    public SocialLoginDelegate(Activity activity, Bundle savedInstanceState, MobileLoginCallback callback, Config config){
+    public SocialLoginDelegate(Activity activity, Bundle savedInstanceState, MobileLoginCallback callback, Config config, LoginPrefs loginPrefs){
 
         this.activity = activity;
         this.callback = callback;
+        this.loginPrefs = loginPrefs;
 
         google = SocialFactory.getInstance(activity, SocialFactory.SOCIAL_SOURCE_TYPE.TYPE_GOOGLE, config);
         google.setCallback(googleCallback);
@@ -128,14 +131,7 @@ public class SocialLoginDelegate {
      * @param backend
      */
     public void onSocialLoginSuccess(String accessToken, String backend) {
-        PrefManager pref = new PrefManager(activity, PrefManager.Pref.LOGIN);
-        pref.put(PrefManager.Key.AUTH_TOKEN_SOCIAL, accessToken);
-        pref.put(PrefManager.Key.AUTH_TOKEN_BACKEND, backend);
-
-        //for debug purpose.
-   //     Exception  ex = new RuntimeException( );
-   //     callback.onUserLoginFailure(ex, accessToken, backend);
-
+        loginPrefs.saveSocialLoginToken(accessToken, backend);
         Task<?> task = new ProfileTask(activity,accessToken, backend);
         callback.onSocialLoginSuccess(accessToken, backend, task);
         task.execute();
@@ -200,7 +196,6 @@ public class SocialLoginDelegate {
             // do SOCIAL LOGIN first
             AuthResponse social = null;
             HashMap<String, CharSequence> descParams = new HashMap<>();
-            String platformName = environment.getConfig().getPlatformName();
             descParams.put("platform_name", environment.getConfig().getPlatformName());
             descParams.put("platform_destination", environment.getConfig().getPlatformDestinationName());
             if (backend.equalsIgnoreCase(PrefManager.Value.BACKEND_FACEBOOK)) {

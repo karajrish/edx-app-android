@@ -12,6 +12,7 @@ import android.support.v4.app.TaskStackBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.edx.mobile.base.MainApplication;
 import org.edx.mobile.course.CourseDetail;
 import org.edx.mobile.discussion.DiscussionComment;
 import org.edx.mobile.discussion.DiscussionThread;
@@ -20,7 +21,6 @@ import org.edx.mobile.event.LogoutEvent;
 import org.edx.mobile.model.api.EnrolledCoursesResponse;
 import org.edx.mobile.module.analytics.ISegment;
 import org.edx.mobile.module.notification.NotificationDelegate;
-import org.edx.mobile.module.prefs.PrefManager;
 import org.edx.mobile.profiles.UserProfileActivity;
 import org.edx.mobile.util.AppConstants;
 import org.edx.mobile.util.Config;
@@ -261,9 +261,7 @@ public class Router {
      * or programmatically
      */
     public void forceLogout(Context context, ISegment segment, NotificationDelegate delegate) {
-        PrefManager pref = new PrefManager(context, PrefManager.Pref.LOGIN);
-        pref.clearAuth();
-        pref.put(PrefManager.Key.TRANSCRIPT_LANGUAGE, "none");
+        MainApplication.getEnvironment(context).getLoginPrefs().clear();
 
         EventBus.getDefault().post(new LogoutEvent());
 

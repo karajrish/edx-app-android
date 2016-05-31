@@ -27,6 +27,7 @@ import org.edx.mobile.model.api.ProfileModel;
 import org.edx.mobile.model.api.RegisterResponse;
 import org.edx.mobile.model.api.RegisterResponseFieldError;
 import org.edx.mobile.module.analytics.ISegment;
+import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.module.prefs.PrefManager;
 import org.edx.mobile.module.registration.model.RegistrationAgreement;
 import org.edx.mobile.module.registration.model.RegistrationDescription;
@@ -43,6 +44,8 @@ import org.edx.mobile.util.ResourceUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class RegisterActivity extends BaseFragmentActivity
         implements SocialLoginDelegate.MobileLoginCallback {
 
@@ -55,6 +58,8 @@ public class RegisterActivity extends BaseFragmentActivity
     private List<IRegistrationFieldView> mFieldViews = new ArrayList<>();
     private SocialLoginDelegate socialLoginDelegate;
 
+    @Inject
+    LoginPrefs loginPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class RegisterActivity extends BaseFragmentActivity
 
         environment.getSegment().trackScreenView(ISegment.Screens.LAUNCH_ACTIVITY);
 
-        socialLoginDelegate = new SocialLoginDelegate(this, savedInstanceState, this, environment.getConfig());
+        socialLoginDelegate = new SocialLoginDelegate(this, savedInstanceState, this, environment.getConfig(), loginPrefs);
 
         boolean isSocialEnabled = SocialFactory.isSocialFeatureEnabled(
                 getApplicationContext(), SocialFactory.SOCIAL_SOURCE_TYPE.TYPE_UNKNOWN, environment.getConfig());
@@ -126,11 +131,7 @@ public class RegisterActivity extends BaseFragmentActivity
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //if user cancel the registration, do the clean up
-                    PrefManager pref = new PrefManager(RegisterActivity.this, PrefManager.Pref.LOGIN);
-                    pref.put(PrefManager.Key.AUTH_TOKEN_BACKEND, null);
-                    pref.put(PrefManager.Key.AUTH_TOKEN_SOCIAL, null);
-
+                    loginPrefs.clearSocialLoginToken();
                     finish();
                 }
             });
@@ -251,9 +252,8 @@ public class RegisterActivity extends BaseFragmentActivity
             parameters.putString("terms_of_service", "true");
 
             //set parameter required by social registration
-            PrefManager pref = new PrefManager(this, PrefManager.Pref.LOGIN);
-            String access_token = pref.getString(PrefManager.Key.AUTH_TOKEN_SOCIAL);
-            String backstore = pref.getString(PrefManager.Key.AUTH_TOKEN_BACKEND);
+            final String access_token = loginPrefs.getSocialLoginAccessToken();
+            final String backstore = loginPrefs.getSocialLoginProvider();
             boolean fromSocialNet = !TextUtils.isEmpty(access_token);
             if (fromSocialNet) {
                 parameters.putString("access_token", access_token);
@@ -464,9 +464,7 @@ public class RegisterActivity extends BaseFragmentActivity
                     populateFormField("name", name);
 
                     //Should we save the email here?
-                    PrefManager pref = new PrefManager(RegisterActivity.this, PrefManager.Pref.LOGIN);
-                    pref.put("email", email);
-                    pref.put(PrefManager.Key.TRANSCRIPT_LANGUAGE, "none");
+                    loginPrefs.setLastAuthenticatedEmail(email);
                 }
             }
         });
@@ -541,11 +539,9 @@ public class RegisterActivity extends BaseFragmentActivity
      *  callback if login to edx success using social access_token
      */
     public void onUserLoginSuccess(ProfileModel profile) throws LoginException {
-
-        PrefManager pref = new PrefManager(RegisterActivity.this, PrefManager.Pref.LOGIN);
         environment.getSegment().identifyUser(profile.id.toString(), profile.email, "");
 
-        String backendKey = pref.getString(PrefManager.Key.SEGMENT_KEY_BACKEND);
+        final String backendKey = loginPrefs.getAuthBackendKeyForSegment();
         if (backendKey != null) {
             environment.getSegment().trackUserLogin(backendKey);
         }
